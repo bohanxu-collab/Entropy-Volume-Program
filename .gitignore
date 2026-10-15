@@ -1,0 +1,11 @@
+.env
+*.env
+!.env.example
+config.yaml
+STOP
+*.pem
+*.key
+logs/
+__pycache__/
+.venv/
+venv/

@@ -1,0 +1,14 @@
+# Copy to config.yaml and edit. Every key is optional; these are the defaults.
+coin: "io:SNDK"                # dex:symbol — Entropy markets are io:*
+size_usd: 60                   # notional per order (min ~11)
+interval_sec: 3                # pause between round trips (>= 1)
+max_spread_bps: 3              # skip when the book is wider than this
+max_spread_ticks: 1            # ...or wider than 1 price tick (cheapest possible spread; 0 = off)
+stable_ms: 300                 # best bid/ask must not move for this long before trading (0 = off)
+slippage_bps: 5                # IOC price buffer past the best price
+leverage: 3                    # isolated leverage, set once at start
+daily_volume_target_usd: 0     # stop for the day after this much volume (0 = no target)
+daily_loss_limit_usd: 5        # stop for the day after this much cost (fees + spread)
+max_position_usd: 200          # hard cap; a single order larger than this is refused
+flatten_on_start: false        # true = close an existing position in this coin before starting
+status_every_sec: 60           # exact volume / fees / cost line from the exchange
