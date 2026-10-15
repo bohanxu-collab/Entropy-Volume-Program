@@ -5,7 +5,8 @@ import tempfile
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from churn import Churner, Config, parse_order, round_down, round_px, tick_size  # noqa: E402
+from churn import (Churner, Config, check_api_wallet, parse_order, round_down,  # noqa: E402
+                   round_px, tick_size)
 
 
 class FakeInfo:
@@ -106,3 +107,29 @@ def test_one_tick_filter_and_stability_check():
     ex2 = FakeExchange(info2)
     bot2 = Churner(Config(size_usd=60, interval_sec=1, stable_ms=1), info2, ex2, "0xabc", dry_run=False)
     assert bot2.cycle() and ex2.orders == []     # book moved between the two looks: skip
+
+
+class _RoleInfo:
+    def __init__(self, resp):
+        self.resp = resp
+
+    def post(self, path, payload):
+        return self.resp
+
+
+def _exits(fn):
+    try:
+        fn()
+    except SystemExit:
+        return True
+    return False
+
+
+def test_refuses_main_wallet_key():
+    main = "0x" + "a" * 40
+    ok = {"role": "agent", "data": {"user": main}}
+    assert _exits(lambda: check_api_wallet(_RoleInfo(ok), main, main))
+    assert _exits(lambda: check_api_wallet(_RoleInfo({"role": "user"}), "0x" + "b" * 40, main))
+    other = {"role": "agent", "data": {"user": "0x" + "c" * 40}}
+    assert _exits(lambda: check_api_wallet(_RoleInfo(other), "0x" + "b" * 40, main))
+    assert not _exits(lambda: check_api_wallet(_RoleInfo(ok), "0x" + "b" * 40, main))

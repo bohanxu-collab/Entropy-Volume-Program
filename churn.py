@@ -10,10 +10,12 @@ Each cycle:
 
 This is NOT an arbitrage or a money-making strategy. Every round trip pays
 the taker fee twice plus about one bid/ask spread. You are buying volume.
-Run `python3 costcalc.py` first to see what that volume costs.
 
 Safety:
-  - use an API wallet (agent) key: it can trade but cannot withdraw
+  - use an API wallet (agent) key: it can trade but cannot withdraw. The
+    script refuses to run with a main-wallet key
+  - the key is only used to sign orders locally; it is never printed, logged
+    or sent anywhere (only signatures go to api.hyperliquid.xyz)
   - daily_loss_limit_usd stops new cycles for the rest of the UTC day
   - create a file named STOP next to this script to flatten and exit
   - the script refuses to start if the coin already has an open position
@@ -329,6 +331,36 @@ class Churner:
             time.sleep(self.cfg.interval_sec)
 
 
+def check_env_file(path: str) -> None:
+    """Warn when .env can be read by other users on this machine."""
+    try:
+        mode = os.stat(path).st_mode
+    except OSError:
+        return
+    if os.name == "posix" and mode & 0o077:
+        log.warning("%s is readable by other users on this machine — run: chmod 600 %s", path, path)
+
+
+def check_api_wallet(info, signer: str, account: str) -> None:
+    """Refuse to trade unless the key belongs to an API wallet (agent) of
+    `account`. A main-wallet key can withdraw funds; an API wallet cannot."""
+    if signer.lower() == account.lower():
+        sys.exit("HL_API_PRIVATE_KEY is your MAIN wallet's key. Do not use it here. Create an "
+                 "API wallet on app.hyperliquid.xyz -> More -> API and use that key instead.")
+    try:
+        r = info.post("/info", {"type": "userRole", "user": signer})
+    except Exception as e:
+        sys.exit(f"could not verify the API wallet ({e!r}); not starting")
+    role = (r or {}).get("role")
+    owner = ((r or {}).get("data") or {}).get("user", "")
+    if role != "agent":
+        sys.exit(f"HL_API_PRIVATE_KEY is not an API wallet (role: {role}). It may be a main "
+                 "wallet key, which can withdraw funds. Use an API wallet key instead.")
+    if owner.lower() != account.lower():
+        sys.exit("this API wallet is not authorized for HL_ACCOUNT_ADDRESS. Check that "
+                 "HL_ACCOUNT_ADDRESS is your MAIN account address.")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Hyperliquid HIP-3 volume churner")
     ap.add_argument("--config", default="config.yaml")
@@ -347,6 +379,7 @@ def main() -> None:
     info = Info(constants.MAINNET_API_URL, skip_ws=True, perp_dexs=["", dex])
     exchange, address = None, "0x0000000000000000000000000000000000000000"
     if not args.dry_run:
+        check_env_file(args.env_file)
         load_dotenv(args.env_file)
         key = (os.getenv("HL_API_PRIVATE_KEY") or "").strip()
         address = (os.getenv("HL_ACCOUNT_ADDRESS") or "").strip()
@@ -355,7 +388,12 @@ def main() -> None:
                      "(your main account address) in .env")
         import eth_account
         from hyperliquid.exchange import Exchange
-        wallet = eth_account.Account.from_key(key)
+        try:
+            wallet = eth_account.Account.from_key(key)
+        except Exception:
+            sys.exit("HL_API_PRIVATE_KEY is not a valid private key")
+        del key
+        check_api_wallet(info, wallet.address, address)
         exchange = Exchange(wallet, constants.MAINNET_API_URL, account_address=address,
                             perp_dexs=["", dex])
         r = exchange.update_leverage(cfg.leverage, cfg.coin, is_cross=False)

@@ -35,12 +35,13 @@
 
 ### 安装
 
-需要 Python 3.9 或以上版本。建议放在一台一直开着的服务器上。Hyperliquid 的服务器在东京，所以东京的云服务器延迟最低。
+需要 Python 3.10 或以上版本。建议放在一台一直开着的服务器上。Hyperliquid 的服务器在东京，所以东京的云服务器延迟最低。
 
 ```bash
 git clone https://github.com/bohanxu-collab/Entropy-Volume-Program.git
 cd Entropy-Volume-Program
 python3 -m venv .venv && source .venv/bin/activate
+pip install -U pip
 pip install -r requirements.txt
 cp config.example.yaml config.yaml
 cp .env.example .env
@@ -88,7 +89,10 @@ python3 churn.py               # 实盘
 
 ### 安全
 
-- **只用 API 钱包的私钥，永远不要用主钱包的私钥。**
+- **只用 API 钱包的私钥，永远不要用主钱包的私钥。** 程序启动时会向交易所核对：如果填的是主钱包私钥，或者 API 钱包没有授权给你填的主账户，会直接拒绝运行。
+- 私钥只在你自己的电脑上用来给订单签名，**不会打印、不会写进日志、不会发到任何地方**。程序只连接 Hyperliquid 官方接口 `api.hyperliquid.xyz`。
+- **只从这里下载：github.com/bohanxu-collab/Entropy-Volume-Program。** 别人转发给你的「改版」「加速版」可能被加了盗号代码。
+- 在服务器上运行 `chmod 600 .env`，让别的用户读不到它（权限不对时程序会提醒）。
 - **`.env` 永远不要上传，也不要发给任何人。** `.gitignore` 已经把它排除了，但你自己 fork 或改代码的时候，注意别手动把它加进去。
 - 任何人（包括帮你安装的人）**都不需要你的私钥**。私钥由你自己粘贴进 `.env`。谁找你要私钥，谁就是骗子。
 - 如果启动时 SNDK 已经有仓位，程序会拒绝运行，以免误平你手动开的仓。
@@ -128,10 +132,13 @@ Entropy Volume Program generates trading volume on Entropy's **`io:SNDK`** marke
 
 ### Quick start
 
+Python 3.10 or newer.
+
 ```bash
 git clone https://github.com/bohanxu-collab/Entropy-Volume-Program.git
 cd Entropy-Volume-Program
 python3 -m venv .venv && source .venv/bin/activate
+pip install -U pip
 pip install -r requirements.txt
 cp config.example.yaml config.yaml && cp .env.example .env
 ```
@@ -143,7 +150,10 @@ cp config.example.yaml config.yaml && cp .env.example .env
 
 ### Security
 
-- Never use your main wallet's private key. Never share or commit `.env`.
+- Never use your main wallet's private key. The bot checks with the exchange at startup and refuses to run with a main-wallet key, or with an API wallet that is not authorized for your account.
+- The key only signs orders on your own machine. It is never printed, logged or sent anywhere; the bot only talks to `api.hyperliquid.xyz`.
+- Only download from github.com/bohanxu-collab/Entropy-Volume-Program. Modified copies passed around by others may contain key stealers.
+- Never share or commit `.env`; run `chmod 600 .env` on a server.
 - Nobody, including anyone helping you install, needs your private key. Anyone who asks for it is a scammer.
 
 ### Install service
