@@ -20,18 +20,17 @@
 
 **开跑之前**：我自己实测刷过 100 万交易量。要付的成本有两块：
 
-- **手续费**：吃单费 0.9 bp，每 100 万交易量约 **90 刀**（我实测是 86 刀）。用下面的邀请链接注册，手续费可以**全部返还**（Entropy 返 50%，邀请人再把他那 50% 返给你），返佣每两周发一次，所以手续费要先垫着。
+- **手续费**：吃单费 0.9 bp，每 100 万交易量约 **90 刀**（我实测是 86 刀）。用下面的邀请链接注册，手续费可以**全部返还**（Entropy 返 50%，我再把我那 50% 返给你），返佣每两周发一次，所以手续费要先垫着。
 - **价差**：每笔成交要付一半的买卖价差，这部分不返。SNDK 价差最窄（1 跳）时，每 100 万约 **37 刀**，再加一点开平仓之间的价格波动，合计大约 **40~55 刀**。
 
 算清楚能接受多少成本，再决定刷多少。建议先用小金额跑一天，看日志里实际花了多少钱。
 
 ### 邀请链接
 
-还没注册 Entropy 的话，可以用这个邀请链接：**https://entropy.io/?r=yourquantguy**
+还没注册 Entropy 的话，可以用这个邀请链接：**https://entropy.io/?r=rxu1007**
 
 - 这是 T4 等级的邀请链接。按 Entropy 官方文档，用 T4 链接注册，你付的手续费会返 **50%**，每两周在个人页面领取（满 5 刀才能领）。
-- 剩下的 50% 是邀请人的奖励，他会**全部返给你**，注册后找他要就行。
-- 为什么用他的链接：我自己没有 T4 的邀请链接；而且我是看了他的一些推文，才对写量化（Quant）脚本感兴趣的。
+- 剩下的 50% 是我的邀请奖励，我会**全部返给你**，注册后联系我就行（联系方式见下文）。
 
 ### 安装
 
@@ -126,9 +125,9 @@ Entropy Volume Program generates trading volume on Entropy's **`io:SNDK`** marke
 
 **Why:** it saves you the time of clicking every trade by hand, and it is less risky than manual trading (no wrong side, wrong size or forgotten position; every open is closed right away, and a daily loss limit stops it). SNDK is used because it is currently the highest-volume market on Entropy io.
 
-**This is not a profitable program.** It is only for volume. Every round trip pays fees plus the bid/ask spread. I tested $1M of volume myself. Fees: the 0.9 bp taker fee is about **$90 per $1M** ($86 measured). With the referral link below, fees are **fully refunded** (Entropy pays back 50%, and the referrer hands back his 50%), paid bi-weekly, so you front them first. The spread is not refunded: at SNDK's one-tick spread it is about **$37 per $1M**, about **$40–55** with price drift. Work out what you can accept before you decide how much to run. Start small for a day and check the real cost in the log.
+**This is not a profitable program.** It is only for volume. Every round trip pays fees plus the bid/ask spread. I tested $1M of volume myself. Fees: the 0.9 bp taker fee is about **$90 per $1M** ($86 measured). With the referral link below, fees are **fully refunded** (Entropy pays back 50%, and I hand back my 50%), paid bi-weekly, so you front them first. The spread is not refunded: at SNDK's one-tick spread it is about **$37 per $1M**, about **$40–55** with price drift. Work out what you can accept before you decide how much to run. Start small for a day and check the real cost in the log.
 
-**Referral link:** https://entropy.io/?r=yourquantguy. It is a T4 link: per Entropy's docs you get back **50% of the fees you pay**, claimable bi-weekly from your profile ($5 minimum). The referrer hands back his 50% referral reward too; just ask him after you sign up. I use his link because I do not have a T4 link myself, and his tweets are what got me into writing quant scripts.
+**Referral link:** https://entropy.io/?r=rxu1007. It is a T4 link: per Entropy's docs you get back **50% of the fees you pay**, claimable bi-weekly from your profile ($5 minimum). I hand back my 50% referral reward too; just contact me after you sign up (contact details below).
 
 ### Quick start
 
